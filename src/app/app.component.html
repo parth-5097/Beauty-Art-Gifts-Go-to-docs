@@ -1,0 +1,24 @@
+<div *ngIf="show !== 'login'" class="main-outer">
+  <div class="left-sidebar">
+    <h3>Welcome Admin!</h3>
+    <div>
+      <div
+        [routerLink]="['/product']"
+        [routerLinkActive]="'active'"
+        class="tab"
+      >
+        <a>Products</a>
+      </div>
+      <div class="tab">
+        <a href="javascript:void(0)" (click)="logout()">Logout</a>
+      </div>
+    </div>
+  </div>
+  <div class="right-container">
+    <div class="right-header">
+      <h4 style="margin-left: 10px">Beauty Art Gifts</h4>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<router-outlet *ngIf="show === 'login'"></router-outlet>

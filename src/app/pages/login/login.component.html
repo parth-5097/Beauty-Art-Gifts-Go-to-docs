@@ -1,0 +1,48 @@
+<div class="login-main-outer">
+  <div class="login-inner">
+    <div class="form-outer">
+      <h2>Sign In</h2>
+      <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div
+          class="col-md-6 form-group"
+          [ngClass]="{
+            'is-invalid': submitted && f.email.errors
+          }"
+        >
+          <span><i class="fa fa-envelope-o" aria-hidden="true"></i></span>
+          <input
+            type="email"
+            id="email"
+            class="form-control input-style"
+            placeholder="Enter your email"
+            formControlName="email"
+          />
+        </div>
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          <div *ngIf="f.email.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.email">Must be an valid email address</div>
+        </div>
+        <div
+          class="col-md-6 form-group"
+          [ngClass]="{
+            'is-invalid': submitted && f.password.errors
+          }"
+        >
+          <span><i class="fa fa-unlock-alt" aria-hidden="true"></i></span>
+          <input
+            type="password"
+            id="password"
+            class="form-control input-style"
+            placeholder="Password"
+            formControlName="password"
+          />
+        </div>
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>

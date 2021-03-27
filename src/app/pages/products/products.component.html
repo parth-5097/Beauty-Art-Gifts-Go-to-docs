@@ -1,0 +1,284 @@
+<div class="right-content">
+  <h3>Products</h3>
+
+  <button
+    class="btn"
+    style="float: right; margin-bottom: 7px"
+    data-keyboard="false"
+    data-backdrop="static"
+    (click)="onAddProduct()"
+  >
+    Add Product
+  </button>
+
+  <div class="section-div">
+    <table
+      datatable
+      [dtOptions]="dtOptions"
+      [dtTrigger]="dtTrigger"
+      class="display"
+      id="users-list"
+    >
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Color</th>
+          <th>Description</th>
+          <th>Title</th>
+          <th>Image</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="data?.length != 0">
+        <tr *ngFor="let person of data; index as i">
+          <td>{{ person.id }}</td>
+          <td>{{ person.amount }}</td>
+          <td>{{ person.category }}</td>
+          <td>{{ person.color }}</td>
+          <td>{{ person.description }}</td>
+          <td>{{ person.title }}</td>
+          <td>
+            <button class="btn" (click)="onImage(person.imagesPath)">
+              View Image
+            </button>
+          </td>
+          <td>
+            <a href="javascript:void(0)" (click)="onEditProduct(person)">
+              <img src="assets/edit-icon-table.svg" />
+            </a>
+            <a
+              href="javascript:void(0)"
+              (click)="onDelete(person.id)"
+              style="margin-left: 5px"
+            >
+              <img src="assets/delete-icon.svg" />
+            </a>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="data?.length == 0">
+        <tr>
+          <td colspan="8" class="no-data-available">No data!</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="imageModel" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" id="model-close-btn" (click)="onClose()"
+        >&times;</span
+      >
+    </div>
+    <div *ngIf="image" class="modal-body">
+      <img [src]="image" />
+    </div>
+  </div>
+</div>
+
+<div id="addModel" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" id="model-close-btn" (click)="onClose()"
+        >&times;</span
+      >
+    </div>
+    <div class="modal-body">
+      <form
+        class="row comn-form"
+        [formGroup]="userForm"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Amount :</label>
+          <input
+            type="number"
+            name=""
+            class="form-control input-style"
+            formControlName="amount"
+            [ngClass]="{
+              'is-invalid': submitted && f.amount.errors
+            }"
+          />
+          <div *ngIf="submitted && f.amount.errors" class="invalid-feedback">
+            <div *ngIf="f.amount.errors.required">Amount is required</div>
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Category :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            formControlName="category"
+            [ngClass]="{
+              'is-invalid': submitted && f.category.errors
+            }"
+          />
+          <div *ngIf="submitted && f.category.errors" class="invalid-feedback">
+            <div *ngIf="f.category.errors.required">Category is required</div>
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Color :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            formControlName="color"
+            [ngClass]="{
+              'is-invalid': submitted && f.color.errors
+            }"
+          />
+          <div *ngIf="submitted && f.color.errors" class="invalid-feedback">
+            <div *ngIf="f.color.errors.required">Color is required</div>
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Description :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            formControlName="description"
+            [ngClass]="{
+              'is-invalid': submitted && f.description.errors
+            }"
+          />
+          <div
+            *ngIf="submitted && f.description.errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f.description.errors.required">
+              Description is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Title :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            formControlName="title"
+            [ngClass]="{
+              'is-invalid': submitted && f.title.errors
+            }"
+          />
+          <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+            <div *ngIf="f.title.errors.required">Title is required</div>
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <input
+            type="file"
+            id="file"
+            #userPhoto
+            (change)="onFileSelected($event)"
+            name="image"
+            autocomplete="off"
+            accept="image/*"
+          />
+        </div>
+        <div class="col-12">
+          <div class="btn-btm-inr-tabs text-center my-3">
+            <button type="submit" class="btn mr-2">Save</button>
+            <button
+              type="button"
+              class="btn"
+              data-dismiss="modal"
+              style="margin-left: 5px"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="editModel" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" id="model-close-btn" (click)="onClose()"
+        >&times;</span
+      >
+    </div>
+    <div *ngIf="editData" class="modal-body">
+      <form
+        class="row comn-form"
+        [formGroup]="userForm"
+        (ngSubmit)="onEditSubmit()"
+      >
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Amount :</label>
+          <input
+            type="number"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.amount"
+            formControlName="amount"
+          />
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Category :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.category"
+            formControlName="category"
+          />
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Color :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.color"
+            formControlName="color"
+          />
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Description :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.description"
+            formControlName="description"
+          />
+        </div>
+        <div class="col-md-6 form-group">
+          <label class="lbl-class">Title :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.title"
+            formControlName="title"
+          />
+        </div>
+        <div class="col-12">
+          <div class="btn-btm-inr-tabs text-center my-3">
+            <button type="submit" class="btn mr-2">Save</button>
+            <button
+              type="button"
+              class="btn"
+              data-dismiss="modal"
+              style="margin-left: 5px"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
