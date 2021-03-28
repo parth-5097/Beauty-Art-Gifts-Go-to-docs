@@ -185,7 +185,7 @@
         </div>
         <div class="col-12">
           <div class="btn-btm-inr-tabs text-center my-3">
-            <button *ngIf="isLoading; else submitProduct">
+            <button class="btn" *ngIf="isLoading; else submitProduct">
               <ng-container>
                 <div
                   class="loader"
@@ -233,6 +233,16 @@
         (ngSubmit)="onEditSubmit()"
       >
         <div class="col-md-6 form-group">
+          <label class="lbl-class">Title :</label>
+          <input
+            type="text"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.title"
+            formControlName="title"
+          />
+        </div>
+        <div class="col-md-6 form-group">
           <label class="lbl-class">Amount :</label>
           <input
             type="number"
@@ -270,16 +280,6 @@
             class="form-control input-style"
             [placeholder]="editData.description"
             formControlName="description"
-          />
-        </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Title :</label>
-          <input
-            type="text"
-            name=""
-            class="form-control input-style"
-            [placeholder]="editData.title"
-            formControlName="title"
           />
         </div>
         <div class="col-12">

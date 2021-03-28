@@ -68,7 +68,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         .ref.get()
         .then((res) => {
           res.forEach((doc: any) => {
-            this.data.push(doc.data());
+            this.data.push({ id: doc.id, ...doc.data() });
           });
         })
         .finally(() => {

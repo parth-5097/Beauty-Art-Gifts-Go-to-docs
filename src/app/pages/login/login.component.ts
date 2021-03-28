@@ -48,9 +48,11 @@ export class LoginComponent implements OnInit {
           setTimeout(() => {
             window.location.href = 'product';
           }, 0);
+          this.isSaving = true;
         })
         .catch((err) => {
           this.toastr.error(err.message);
+          this.isSaving = true;
         });
     }
   }
