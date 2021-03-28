@@ -41,7 +41,18 @@
           <div *ngIf="f.password.errors.required">Password is required</div>
         </div>
 
-        <button type="submit">Submit</button>
+        <button *ngIf="isSaving; else submitLogin">
+          <ng-container>
+            <div
+              class="loader"
+              style="margin: auto; height: 20px; width: 20px"
+            ></div>
+          </ng-container>
+        </button>
+
+        <ng-template #submitLogin>
+          <button #submitLogin type="submit" [hidden]="isSaving">Submit</button>
+        </ng-template>
       </form>
     </div>
   </div>

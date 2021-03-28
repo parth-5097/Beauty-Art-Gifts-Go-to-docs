@@ -25,12 +25,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   data: any[] = [];
   selectedFile: any = null;
-  fb!: any;
+  fb: any[] = [];
   downloadURL!: Observable<string>;
   image: any;
   editData: any;
   userForm!: FormGroup;
   submitted = false;
+  isLoading: any = false;
 
   constructor(
     private db: AngularFirestore,
@@ -43,6 +44,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.dtOptions = {
       pagingType: 'simple_numbers',
       pageLength: 20,
+      destroy: true,
       scrollY: '50vh',
       responsive: true,
     };
@@ -66,7 +68,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         .ref.get()
         .then((res) => {
           res.forEach((doc: any) => {
-            this.data.push({ id: doc.id, ...doc.data() });
+            this.data.push(doc.data());
           });
         })
         .finally(() => {
@@ -81,7 +83,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   ReloadDatatable() {
     this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      this.getdbData();
+      this.getdbData().then((data) => {
+        this.dtTrigger.next();
+      });
     });
   }
 
@@ -107,24 +111,31 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event: any) {
+    this.isLoading = true;
+
     var n = Date.now();
-    const file = event.target.files[0];
-    const filePath = `AdminImages/${n}`;
-    const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(`AdminImages/${n}`, file);
-    task
-      .snapshotChanges()
-      .pipe(
-        finalize(() => {
-          this.downloadURL = fileRef.getDownloadURL();
-          this.downloadURL.subscribe((url) => {
-            if (url) {
-              this.fb = url;
-            }
-          });
-        })
-      )
-      .subscribe((url) => {});
+    for (let i = 0; i < event.target.files.length; i++) {
+      const file = event.target.files[i];
+      const filePath = `AdminImages/${n}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(`AdminImages/${n}`, file);
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            this.downloadURL = fileRef.getDownloadURL();
+            this.downloadURL.subscribe((url) => {
+              if (url) {
+                this.fb.push(url);
+                if (i == event.target.files.length - 1) {
+                  this.isLoading = false;
+                }
+              }
+            });
+          })
+        )
+        .subscribe((url) => {});
+    }
     document.getElementById('addModel')?.classList.add('block');
   }
 
@@ -179,6 +190,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
       .then((res) => {
         this.toastr.success('Updated');
         document.getElementById('editModel')?.classList.remove('block');
+        this.ReloadDatatable();
       })
       .catch((err) => {
         this.toastr.error(err.message);

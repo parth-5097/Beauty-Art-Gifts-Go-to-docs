@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   submitted = false;
+  isSaving: any = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     } else {
+      this.isSaving = true;
       this.fireAuth
         .signInWithEmailAndPassword(
           this.loginForm.value.email,
