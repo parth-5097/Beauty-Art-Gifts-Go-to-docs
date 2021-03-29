@@ -22,7 +22,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
   data: any[] = [];
   selectedFile: any = null;
   fb: any[] = [];
+  files: any[] = [];
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
+  slideConfigImg = { slidesToShow: 4, slidesToScroll: 1 };
   downloadURL!: Observable<string>;
   image: any[] = [];
   editData: any;
@@ -93,7 +95,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   onImage(image: any) {
-    console.log(image);
     this.image = [];
     this.image = image;
     document.getElementById('imageModel')?.classList.add('block');
@@ -112,36 +113,56 @@ export class ProductsComponent implements OnInit, OnDestroy {
     document.getElementById('editModel')?.classList.add('block');
   }
 
-  onFileSelected(event: any) {
+  onFileSelected(event: any[]) {
     this.isLoading = true;
 
-    for (let i = 0; i < event.target.files.length; i++) {
-      var n = Math.floor(
-        Math.pow(10, 10 - 1) +
-          Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
-      );
-      const file = event.target.files[i];
-      const filePath = `AdminImages/${n}`;
-      const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(`AdminImages/${n}`, file);
-      task
-        .snapshotChanges()
-        .pipe(
-          finalize(() => {
-            this.downloadURL = fileRef.getDownloadURL();
-            this.downloadURL.subscribe((url) => {
-              if (url) {
-                this.fb.push(url);
-                if (i == event.target.files.length - 1) {
-                  this.isLoading = false;
+    return new Promise((resolve, reject) => {
+      this.image = [];
+      for (let i = 0; i < event.length; i++) {
+        var n = Math.floor(
+          Math.pow(10, 10 - 1) +
+            Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
+        );
+        const file = event[i];
+        const filePath = `AdminImages/${n}`;
+        const fileRef = this.storage.ref(filePath);
+        const task = this.storage.upload(`AdminImages/${n}`, file);
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              this.downloadURL = fileRef.getDownloadURL();
+              this.downloadURL.subscribe((url) => {
+                if (url) {
+                  this.image.push(url);
+                  if (i == event.length - 1) {
+                    this.isLoading = false;
+                    resolve('');
+                  }
                 }
-              }
-            });
-          })
-        )
-        .subscribe((url) => {});
+              });
+            })
+          )
+          .subscribe((url) => {});
+      }
+    });
+  }
+
+  onImageSelect(event: any) {
+    this.fb = [];
+    this.files = [];
+    if (event.target.files && event.target.files[0]) {
+      for (let index = 0; index < event.target.files.length; index++) {
+        var reader = new FileReader();
+
+        reader.onload = (event: ProgressEvent) => {
+          this.fb.push((<FileReader>event.target).result);
+        };
+
+        this.files.push(event.target.files[index]);
+        reader.readAsDataURL(event.target.files[index]);
+      }
     }
-    document.getElementById('addModel')?.classList.add('block');
   }
 
   onSubmit() {
@@ -151,16 +172,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.userForm.invalid) {
       return;
     } else {
-      this.userForm.value.imagesPath = this.fb;
-      this.db
-        .collection('products')
-        .ref.add(this.userForm.value)
-        .then((res) => {
-          this.toastr.success('Added');
-          document.getElementById('addModel')?.classList.remove('block');
-          setTimeout(() => {
-            this.ReloadDatatable();
-          }, 0);
+      this.onFileSelected(this.files)
+        .then((data) => {
+          this.userForm.value.imagesPath = this.image;
+          this.db
+            .collection('products')
+            .ref.add(this.userForm.value)
+            .then((res) => {
+              this.toastr.success('Added');
+              document.getElementById('addModel')?.classList.remove('block');
+              setTimeout(() => {
+                this.ReloadDatatable();
+              }, 0);
+            })
+            .catch((err) => {
+              this.toastr.error(err.message);
+            });
         })
         .catch((err) => {
           this.toastr.error(err.message);
@@ -202,6 +229,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
       .catch((err) => {
         this.toastr.error(err.message);
       });
+  }
+
+  onImageClose(i: any) {
+    this.fb.splice(i, 1);
+    this.files.splice(i, 1);
   }
 
   onClose() {

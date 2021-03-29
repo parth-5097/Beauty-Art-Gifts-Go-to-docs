@@ -12,9 +12,10 @@
 }
 
 .slick-slide {
-  height: 700px;
+  height: auto;
 }
 
 .slick-slide img {
-  height: 700px;
+  height: auto;
+  max-width: fit-content;
 }

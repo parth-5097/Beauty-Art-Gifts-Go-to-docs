@@ -90,15 +90,43 @@
       <span class="close" id="model-close-btn" (click)="onClose()"
         >&times;</span
       >
+      <div class="col-12" style="float: right">
+        <div class="btn-btm-inr-tabs text-center my-3">
+          <button class="btn" *ngIf="isLoading; else submitProduct">
+            <ng-container>
+              <div
+                class="loader"
+                style="margin: auto; height: 20px; width: 20px"
+              ></div>
+            </ng-container>
+          </button>
+
+          <ng-template #submitProduct>
+            <button
+              #submitProduct
+              class="btn"
+              type="submit"
+              [hidden]="isLoading"
+              (click)="onSubmit()"
+            >
+              Save
+            </button>
+          </ng-template>
+          <button
+            type="button"
+            class="btn"
+            style="margin-left: 5px"
+            (click)="onClose()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
     <div class="modal-body">
-      <form
-        class="row comn-form"
-        [formGroup]="userForm"
-        (ngSubmit)="onSubmit()"
-      >
+      <form class="row comn-form" [formGroup]="userForm">
         <div class="col-md-6 form-group">
-          <label class="lbl-class">Title :</label>
+          <strong class="lbl-class">Title :</strong>
           <input
             type="text"
             name=""
@@ -107,13 +135,14 @@
             [ngClass]="{
               'is-invalid': submitted && f.title.errors
             }"
+            style="margin-top: 5px"
           />
           <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
             <div *ngIf="f.title.errors.required">Title is required</div>
           </div>
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Amount :</label><br />
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Amount :</strong><br />
           <input
             type="number"
             name=""
@@ -122,13 +151,14 @@
             [ngClass]="{
               'is-invalid': submitted && f.amount.errors
             }"
+            style="margin-top: 5px"
           />
           <div *ngIf="submitted && f.amount.errors" class="invalid-feedback">
             <div *ngIf="f.amount.errors.required">Amount is required</div>
           </div>
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Category :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Category :</strong>
           <input
             type="text"
             name=""
@@ -137,13 +167,14 @@
             [ngClass]="{
               'is-invalid': submitted && f.category.errors
             }"
+            style="margin-top: 5px"
           />
           <div *ngIf="submitted && f.category.errors" class="invalid-feedback">
             <div *ngIf="f.category.errors.required">Category is required</div>
           </div>
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Color :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Color :</strong>
           <input
             type="text"
             name=""
@@ -152,13 +183,14 @@
             [ngClass]="{
               'is-invalid': submitted && f.color.errors
             }"
+            style="margin-top: 5px"
           />
           <div *ngIf="submitted && f.color.errors" class="invalid-feedback">
             <div *ngIf="f.color.errors.required">Color is required</div>
           </div>
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Description :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Description :</strong>
           <input
             type="text"
             name=""
@@ -167,6 +199,7 @@
             [ngClass]="{
               'is-invalid': submitted && f.description.errors
             }"
+            style="margin-top: 5px"
           />
           <div
             *ngIf="submitted && f.description.errors"
@@ -177,14 +210,12 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-md-6 form-group" style="margin-top: 10px">
           <input
             type="file"
             id="file"
             #userPhoto
-            (change)="onFileSelected($event)"
-            name="image"
-            autocomplete="off"
+            (change)="onImageSelect($event)"
             accept="image/*"
             multiple
           />
@@ -192,43 +223,22 @@
             *ngIf="fb"
             class="carousel"
             #slickModal="slick-carousel"
-            [config]="slideConfig"
+            [config]="slideConfigImg"
           >
-            <div ngxSlickItem *ngFor="let slide of fb" class="slide">
+            <div
+              ngxSlickItem
+              *ngFor="let slide of fb; index as i"
+              class="slide"
+            >
+              <span
+                class="close-img"
+                id="model-close-btn"
+                (click)="onImageClose(i)"
+                >&times;</span
+              >
               <img src="{{ slide }}" alt="" width="100%" />
             </div>
           </ngx-slick-carousel>
-        </div>
-        <div class="col-12" style="margin-top: 5px">
-          <div class="btn-btm-inr-tabs text-center my-3">
-            <button class="btn" *ngIf="isLoading; else submitProduct">
-              <ng-container>
-                <div
-                  class="loader"
-                  style="margin: auto; height: 20px; width: 20px"
-                ></div>
-              </ng-container>
-            </button>
-
-            <ng-template #submitProduct>
-              <button
-                #submitProduct
-                class="btn"
-                type="submit"
-                [hidden]="isLoading"
-              >
-                Save
-              </button>
-            </ng-template>
-            <button
-              type="button"
-              class="btn"
-              style="margin-left: 5px"
-              (click)="onClose()"
-            >
-              Cancel
-            </button>
-          </div>
         </div>
       </form>
     </div>
@@ -241,75 +251,78 @@
       <span class="close" id="model-close-btn" (click)="onClose()"
         >&times;</span
       >
+      <div class="col-12" style="float: right">
+        <div class="btn-btm-inr-tabs text-center my-3">
+          <button type="submit" class="btn mr-2" (click)="onEditSubmit()">
+            Save
+          </button>
+          <button
+            type="button"
+            class="btn"
+            style="margin-left: 5px"
+            (click)="onClose()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
     <div *ngIf="editData" class="modal-body">
-      <form
-        class="row comn-form"
-        [formGroup]="userForm"
-        (ngSubmit)="onEditSubmit()"
-      >
+      <form class="row comn-form" [formGroup]="userForm">
         <div class="col-md-6 form-group">
-          <label class="lbl-class">Title :</label>
+          <strong class="lbl-class">Title :</strong>
           <input
             type="text"
             name=""
             class="form-control input-style"
             [placeholder]="editData.title"
             formControlName="title"
+            style="margin-top: 5px"
           />
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Amount :</label><br />
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Amount :</strong><br />
           <input
             type="number"
             name=""
             class="form-control input-style"
             [placeholder]="editData.amount"
             formControlName="amount"
+            style="margin-top: 5px"
           />
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Category :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Category :</strong>
           <input
             type="text"
             name=""
             class="form-control input-style"
             [placeholder]="editData.category"
             formControlName="category"
+            style="margin-top: 5px"
           />
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Color :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Color :</strong>
           <input
             type="text"
             name=""
             class="form-control input-style"
             [placeholder]="editData.color"
             formControlName="color"
+            style="margin-top: 5px"
           />
         </div>
-        <div class="col-md-6 form-group">
-          <label class="lbl-class">Description :</label>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Description :</strong>
           <input
             type="text"
             name=""
             class="form-control input-style"
             [placeholder]="editData.description"
             formControlName="description"
+            style="margin-top: 5px"
           />
-        </div>
-        <div class="col-12" style="margin-top: 5px">
-          <div class="btn-btm-inr-tabs text-center my-3">
-            <button type="submit" class="btn mr-2">Save</button>
-            <button
-              type="button"
-              class="btn"
-              style="margin-left: 5px"
-              (click)="onClose()"
-            >
-              Cancel
-            </button>
-          </div>
         </div>
       </form>
     </div>
