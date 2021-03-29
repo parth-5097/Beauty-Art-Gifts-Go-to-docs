@@ -21,22 +21,22 @@
     >
       <thead>
         <tr>
+          <th>Title</th>
           <th>Amount</th>
           <th>Category</th>
           <th>Color</th>
           <th>Description</th>
-          <th>Title</th>
           <th>Image</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody *ngIf="data?.length != 0">
         <tr *ngFor="let person of data; index as i">
+          <td>{{ person.title }}</td>
           <td>{{ person.amount }}</td>
           <td>{{ person.category }}</td>
           <td>{{ person.color }}</td>
           <td>{{ person.description }}</td>
-          <td>{{ person.title }}</td>
           <td>
             <button class="btn" (click)="onImage(person.imagesPath)">
               View Image
@@ -72,9 +72,15 @@
         >&times;</span
       >
     </div>
-    <div *ngIf="image" class="modal-body">
-      <img [src]="image" />
-    </div>
+    <ngx-slick-carousel
+      class="carousel"
+      #slickModal="slick-carousel"
+      [config]="slideConfig"
+    >
+      <div ngxSlickItem *ngFor="let slide of image" class="slide">
+        <img src="{{ slide }}" alt="" width="100%" />
+      </div>
+    </ngx-slick-carousel>
   </div>
 </div>
 
@@ -107,7 +113,7 @@
           </div>
         </div>
         <div class="col-md-6 form-group">
-          <label class="lbl-class">Amount :</label>
+          <label class="lbl-class">Amount :</label><br />
           <input
             type="number"
             name=""
@@ -182,8 +188,18 @@
             accept="image/*"
             multiple
           />
+          <ngx-slick-carousel
+            *ngIf="fb"
+            class="carousel"
+            #slickModal="slick-carousel"
+            [config]="slideConfig"
+          >
+            <div ngxSlickItem *ngFor="let slide of fb" class="slide">
+              <img src="{{ slide }}" alt="" width="100%" />
+            </div>
+          </ngx-slick-carousel>
         </div>
-        <div class="col-12">
+        <div class="col-12" style="margin-top: 5px">
           <div class="btn-btm-inr-tabs text-center my-3">
             <button class="btn" *ngIf="isLoading; else submitProduct">
               <ng-container>
@@ -243,7 +259,7 @@
           />
         </div>
         <div class="col-md-6 form-group">
-          <label class="lbl-class">Amount :</label>
+          <label class="lbl-class">Amount :</label><br />
           <input
             type="number"
             name=""
@@ -282,7 +298,7 @@
             formControlName="description"
           />
         </div>
-        <div class="col-12">
+        <div class="col-12" style="margin-top: 5px">
           <div class="btn-btm-inr-tabs text-center my-3">
             <button type="submit" class="btn mr-2">Save</button>
             <button

@@ -10,3 +10,11 @@
 .form-group.is-invalid {
   border: 1px solid #dc3545;
 }
+
+.slick-slide {
+  height: 700px;
+}
+
+.slick-slide img {
+  height: 700px;
+}

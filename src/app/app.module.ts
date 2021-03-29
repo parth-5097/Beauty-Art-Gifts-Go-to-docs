@@ -18,6 +18,7 @@ import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { DataTablesModule } from 'angular-datatables';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 
 @NgModule({
   declarations: [AppComponent, ProductsComponent, LoginComponent],
@@ -31,6 +32,7 @@ import { DataTablesModule } from 'angular-datatables';
     AngularFireDatabaseModule,
     AngularFireStorageModule,
     DataTablesModule,
+    SlickCarouselModule,
     ToastrModule.forRoot(),
   ],
   providers: [{ provide: createStorageRef, useValue: 'your' }],

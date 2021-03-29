@@ -1,14 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
+import { SlickCarouselComponent } from 'ngx-slick-carousel';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subject } from 'rxjs';
 import { map, finalize } from 'rxjs/operators';
@@ -19,6 +14,7 @@ import { map, finalize } from 'rxjs/operators';
   styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit, OnDestroy {
+  @ViewChild('slickModal') slickModal!: SlickCarouselComponent;
   @ViewChild(DataTableDirective, { static: false })
   datatableElement!: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -26,8 +22,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
   data: any[] = [];
   selectedFile: any = null;
   fb: any[] = [];
+  slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
   downloadURL!: Observable<string>;
-  image: any;
+  image: any[] = [];
   editData: any;
   userForm!: FormGroup;
   submitted = false;
@@ -96,16 +93,21 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   onImage(image: any) {
-    this.image = '';
-    this.image = image[0];
+    console.log(image);
+    this.image = [];
+    this.image = image;
     document.getElementById('imageModel')?.classList.add('block');
   }
 
   onAddProduct() {
+    this.userForm.reset();
+    this.submitted = false;
     document.getElementById('addModel')?.classList.add('block');
   }
 
   onEditProduct(data: any) {
+    this.userForm.reset();
+    this.submitted = false;
     this.editData = data;
     document.getElementById('editModel')?.classList.add('block');
   }
@@ -113,8 +115,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   onFileSelected(event: any) {
     this.isLoading = true;
 
-    var n = Date.now();
     for (let i = 0; i < event.target.files.length; i++) {
+      var n = Math.floor(
+        Math.pow(10, 10 - 1) +
+          Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
+      );
       const file = event.target.files[i];
       const filePath = `AdminImages/${n}`;
       const fileRef = this.storage.ref(filePath);
@@ -146,14 +151,16 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.userForm.invalid) {
       return;
     } else {
-      this.userForm.value.imagesPath = [this.fb];
+      this.userForm.value.imagesPath = this.fb;
       this.db
         .collection('products')
         .ref.add(this.userForm.value)
         .then((res) => {
           this.toastr.success('Added');
           document.getElementById('addModel')?.classList.remove('block');
-          this.ReloadDatatable();
+          setTimeout(() => {
+            this.ReloadDatatable();
+          }, 0);
         })
         .catch((err) => {
           this.toastr.error(err.message);
