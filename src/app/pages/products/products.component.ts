@@ -6,7 +6,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { SlickCarouselComponent } from 'ngx-slick-carousel';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subject } from 'rxjs';
-import { map, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-products',
@@ -24,9 +24,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   fb: any[] = [];
   files: any[] = [];
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
-  slideConfigImg = { slidesToShow: 4, slidesToScroll: 1 };
+  slideConfigImg = { slidesToShow: 4, slidesToScroll: 4 };
   downloadURL!: Observable<string>;
   image: any[] = [];
+  image1: any[] = [];
+  image2: any[] = [];
   editData: any;
   userForm!: FormGroup;
   submitted = false;
@@ -104,6 +106,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.userForm.reset();
     this.submitted = false;
     document.getElementById('addModel')?.classList.add('block');
+    this.db
+      .collection('images')
+      .ref.get()
+      .then((res) => {
+        res.forEach((doc: any) => {
+          this.image1 = [...this.image1, ...doc.data().image];
+        });
+      });
+  }
+
+  onAddImage() {
+    document.getElementById('addImage')?.classList.add('block');
   }
 
   onEditProduct(data: any) {
@@ -163,6 +177,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         reader.readAsDataURL(event.target.files[index]);
       }
     }
+    document.getElementById('file')!.nodeValue = '';
   }
 
   onSubmit() {
@@ -172,9 +187,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.userForm.invalid) {
       return;
     } else {
-      this.onFileSelected(this.files)
-        .then((data) => {
-          this.userForm.value.imagesPath = this.image;
+      this.userForm.value.imagesPath = this.image2;
           this.db
             .collection('products')
             .ref.add(this.userForm.value)
@@ -188,10 +201,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
             .catch((err) => {
               this.toastr.error(err.message);
             });
-        })
-        .catch((err) => {
-          this.toastr.error(err.message);
-        });
     }
   }
 
@@ -206,6 +215,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
       })
       .catch((err) => {
         this.toastr.error(err.message);
+      });
+  }
+
+  onImageUpload() {
+    this.onFileSelected(this.files)
+      .then((data) => {
+        this.db.collection('images').add({ image: this.image });
+        document.getElementById('addImage')?.classList.remove('block');
+        this.fb = [];
+      })
+      .catch((err) => {
+        this.toastr.error('Something went wrong');
       });
   }
 
@@ -236,10 +257,17 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.files.splice(i, 1);
   }
 
+  onImgSelect(val: any) {
+    this.image2.indexOf(val) >= 0
+      ? (this.image2 = this.image2.filter((el) => el !== val))
+      : this.image2.push(val);
+  }
+
   onClose() {
     document.getElementById('imageModel')?.classList.remove('block');
     document.getElementById('addModel')?.classList.remove('block');
     document.getElementById('editModel')?.classList.remove('block');
+    document.getElementById('addImage')?.classList.remove('block');
   }
 
   ngOnDestroy() {

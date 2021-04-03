@@ -19,3 +19,17 @@
   height: auto;
   max-width: fit-content;
 }
+
+.slick-slider {
+  margin: 0 -15px;
+}
+.slick-slide {
+  padding: 10px;
+  text-align: center;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+.img-select {
+  border: 5px solid blue !important;
+}
