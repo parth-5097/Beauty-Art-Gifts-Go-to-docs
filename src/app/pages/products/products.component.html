@@ -115,6 +115,7 @@
               class="btn"
               type="submit"
               [hidden]="isLoading"
+              [disabled]="!button"
               (click)="onImageUpload()"
             >
               Upload Image

@@ -24,6 +24,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   fb: any[] = [];
   files: any[] = [];
   selected: any = {};
+  button:boolean = false;
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
   slideConfigImg = { slidesToShow: 5, slidesToScroll: 5 };
   downloadURL!: Observable<string>;
@@ -159,7 +160,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
                 if (url) {
                   this.image.push(url);
                   if (i == event.length - 1) {
-                    this.isLoading = false;
                     resolve('');
                   }
                 }
@@ -176,6 +176,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.files = [];
     if (event.target.files && event.target.files[0]) {
       for (let index = 0; index < event.target.files.length; index++) {
+        this.button = true;
         var reader = new FileReader();
 
         reader.onload = (event: ProgressEvent) => {
@@ -230,6 +231,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   onImageUpload() {
     this.onFileSelected(this.files)
       .then((data) => {
+        this.isLoading = false;
         document.getElementById('addImage')?.classList.remove('block');
         this.fb = [];
       })
