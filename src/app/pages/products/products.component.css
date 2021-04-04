@@ -21,15 +21,14 @@
 }
 
 .slick-slider {
-  margin: 0 -15px;
+  margin: 0 -5px;
 }
 .slick-slide {
-  padding: 5px;
   text-align: center;
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .img-select {
-  border: 3px solid blue;
+  border: 1.5px solid blue;
 }

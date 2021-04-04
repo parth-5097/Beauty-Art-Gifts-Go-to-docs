@@ -52,7 +52,7 @@
             </button>
           </td>
           <td>
-            <a href="javascript:void(0)" (click)="onEditProduct(person)">
+            <a href="javascript:void(0)" (click)="onEditProduct(person, i)">
               <img src="assets/edit-icon-table.svg" />
             </a>
             <a
@@ -324,6 +324,14 @@
       <span class="close" id="model-close-btn" (click)="onClose()"
         >&times;</span
       >
+      <div class="col-12">
+        <div class="btn-btm-inr-tabs text-center my-3">
+          <button class="btn" (click)="onPrev()">Prev</button>
+          <button class="btn" style="margin-left: 5px" (click)="onNext()">
+            Next
+          </button>
+        </div>
+      </div>
       <div class="col-12" style="float: right">
         <div class="btn-btm-inr-tabs text-center my-3">
           <button class="btn" *ngIf="isLoading; else submitProduct">
@@ -367,6 +375,12 @@
             [config]="slideConfigImg"
           >
             <div ngxSlickItem *ngFor="let slide of image1; index as i">
+              <span
+                class="close-img"
+                id="model-close-btn"
+                (click)="onEditImageClose(i)"
+                >&times;</span
+              >
               <img src="{{ slide }}" alt="" width="100%" />
             </div>
           </ngx-slick-carousel>
@@ -394,15 +408,24 @@
           />
         </div>
         <div class="col-md-6 form-group" style="margin-top: 10px">
-          <strong class="lbl-class">Category :</strong>
-          <input
-            type="text"
+          <strong class="lbl-class">Category :</strong><br />
+          <select
             name=""
             class="form-control input-style"
-            [placeholder]="editData.category"
             formControlName="category"
             style="margin-top: 5px"
-          />
+          >
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
         </div>
         <div class="col-md-6 form-group" style="margin-top: 10px">
           <strong class="lbl-class">Color :</strong>

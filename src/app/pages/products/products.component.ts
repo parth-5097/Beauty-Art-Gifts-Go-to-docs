@@ -19,6 +19,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   datatableElement!: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  currentIndex: any;
   data: any[] = [];
   selectedFile: any = null;
   fb: any[] = [];
@@ -130,13 +131,28 @@ export class ProductsComponent implements OnInit, OnDestroy {
     document.getElementById('addImage')?.classList.add('block');
   }
 
-  onEditProduct(data: any) {
+  onEditProduct(data: any, index: any) {
     this.fb = [];
     this.userForm.reset();
     this.submitted = false;
+    this.currentIndex = index;
     this.image1 = data.imagesPath;
     this.editData = data;
     document.getElementById('editModel')?.classList.add('block');
+  }
+
+  onNext() {
+    this.image1 = [];
+    this.currentIndex++;
+    this.editData = this.data[this.currentIndex];
+    this.image1 = this.editData.imagesPath;
+  }
+
+  onPrev() {
+    this.image1 = [];
+    this.currentIndex--;
+    this.editData = this.data[this.currentIndex];
+    this.image1 = this.editData.imagesPath;
   }
 
   onFileSelected(event: any[]) {
@@ -258,31 +274,35 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
     return new Promise((resolve, reject) => {
       this.image = [];
-      for (let i = 0; i < event.length; i++) {
-        var n = Math.floor(
-          Math.pow(10, 10 - 1) +
-            Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
-        );
-        const file = event[i];
-        const filePath = `AdminImages/${n}`;
-        const fileRef = this.storage.ref(filePath);
-        const task = this.storage.upload(`AdminImages/${n}`, file);
-        task
-          .snapshotChanges()
-          .pipe(
-            finalize(() => {
-              this.downloadURL = fileRef.getDownloadURL();
-              this.downloadURL.subscribe((url) => {
-                if (url) {
-                  this.image.push(url);
-                  if (i == event.length - 1) {
-                    resolve(this.image);
+      if (event.length > 0) {
+        for (let i = 0; i < event.length; i++) {
+          var n = Math.floor(
+            Math.pow(10, 10 - 1) +
+              Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
+          );
+          const file = event[i];
+          const filePath = `AdminImages/${n}`;
+          const fileRef = this.storage.ref(filePath);
+          const task = this.storage.upload(`AdminImages/${n}`, file);
+          task
+            .snapshotChanges()
+            .pipe(
+              finalize(() => {
+                this.downloadURL = fileRef.getDownloadURL();
+                this.downloadURL.subscribe((url) => {
+                  if (url) {
+                    this.image.push(url);
+                    if (i == event.length - 1) {
+                      resolve(this.image);
+                    }
                   }
-                }
-              });
-            })
-          )
-          .subscribe((url) => {});
+                });
+              })
+            )
+            .subscribe((url) => {});
+        }
+      } else {
+        resolve([]);
       }
     });
   }
@@ -319,6 +339,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   onImageClose(i: any) {
     this.fb.splice(i, 1);
     this.files.splice(i, 1);
+  }
+
+  onEditImageClose(i: any) {
+    this.image1.splice(i, 1);
   }
 
   onImgSelect(val: any) {
