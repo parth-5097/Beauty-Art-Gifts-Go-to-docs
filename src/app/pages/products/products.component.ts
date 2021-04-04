@@ -23,8 +23,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
   selectedFile: any = null;
   fb: any[] = [];
   files: any[] = [];
+  selected: any = {};
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
-  slideConfigImg = { slidesToShow: 4, slidesToScroll: 4 };
+  slideConfigImg = { slidesToShow: 6, slidesToScroll: 6 };
   downloadURL!: Observable<string>;
   image: any[] = [];
   image1: any[] = [];
@@ -187,20 +188,21 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.userForm.invalid) {
       return;
     } else {
+      console.log(this.image2);
       this.userForm.value.imagesPath = this.image2;
-          this.db
-            .collection('products')
-            .ref.add(this.userForm.value)
-            .then((res) => {
-              this.toastr.success('Added');
-              document.getElementById('addModel')?.classList.remove('block');
-              setTimeout(() => {
-                this.ReloadDatatable();
-              }, 0);
-            })
-            .catch((err) => {
-              this.toastr.error(err.message);
-            });
+      this.db
+        .collection('products')
+        .ref.add(this.userForm.value)
+        .then((res) => {
+          this.toastr.success('Added');
+          document.getElementById('addModel')?.classList.remove('block');
+        })
+        .catch((err) => {
+          this.toastr.error(err.message);
+        })
+        .finally(() => {
+          this.ReloadDatatable();
+        });
     }
   }
 

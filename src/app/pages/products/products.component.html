@@ -100,7 +100,7 @@
       >
       <div class="col-12" style="float: right">
         <div class="btn-btm-inr-tabs text-center my-3">
-          <button class="btn" *ngIf="isLoading; else submitProduct">
+          <button class="btn" *ngIf="isLoading; else submitImage">
             <ng-container>
               <div
                 class="loader"
@@ -109,7 +109,7 @@
             </ng-container>
           </button>
 
-          <ng-template #submitProduct>
+          <ng-template #submitImage>
             <button
               #submitProduct
               class="btn"
@@ -303,11 +303,9 @@
           >
             <div
               ngxSlickItem
-              *ngFor="let slide of image1"
-              [class.img-select]="slide.isselected"
-              (click)="
-                [(slide.isselected = !slide.isselected), onImgSelect(slide)]
-              "
+              [class.img-select]="selected[i]"
+              *ngFor="let slide of image1; index as i"
+              (click)="[(selected[i] = !selected[i]), onImgSelect(slide)]"
             >
               <img src="{{ slide }}" alt="" width="100%" />
             </div>
