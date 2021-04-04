@@ -105,6 +105,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   onAddProduct() {
     this.userForm.reset();
+    this.image1 = [];
+    this.image2 = [];
     this.submitted = false;
     document.getElementById('addModel')?.classList.add('block');
     this.db
