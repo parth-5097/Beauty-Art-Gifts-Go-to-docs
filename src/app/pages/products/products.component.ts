@@ -25,7 +25,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   files: any[] = [];
   selected: any = {};
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
-  slideConfigImg = { slidesToShow: 6, slidesToScroll: 6 };
+  slideConfigImg = { slidesToShow: 5, slidesToScroll: 5 };
   downloadURL!: Observable<string>;
   image: any[] = [];
   image1: any[] = [];
@@ -109,17 +109,23 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.image2 = [];
     this.submitted = false;
     document.getElementById('addModel')?.classList.add('block');
-    this.db
-      .collection('images')
-      .ref.get()
-      .then((res) => {
-        res.forEach((doc: any) => {
-          this.image1 = [...this.image1, ...doc.data().image];
+    this.storage
+      .ref('AdminImages/')
+      .listAll()
+      .subscribe((res) => {
+        res.items.forEach((doc) => {
+          this.storage
+            .ref(doc.fullPath)
+            .getDownloadURL()
+            .subscribe((res) => {
+              this.image1.push(res);
+            });
         });
       });
   }
 
   onAddImage() {
+    this.fb = [];
     document.getElementById('addImage')?.classList.add('block');
   }
 
@@ -190,7 +196,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.userForm.invalid) {
       return;
     } else {
-      console.log(this.image2);
       this.userForm.value.imagesPath = this.image2;
       this.db
         .collection('products')
@@ -225,7 +230,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
   onImageUpload() {
     this.onFileSelected(this.files)
       .then((data) => {
-        this.db.collection('images').add({ image: this.image });
         document.getElementById('addImage')?.classList.remove('block');
         this.fb = [];
       })
