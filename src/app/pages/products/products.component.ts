@@ -24,7 +24,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   fb: any[] = [];
   files: any[] = [];
   selected: any = {};
-  button:boolean = false;
+  button: boolean = false;
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
   slideConfigImg = { slidesToShow: 5, slidesToScroll: 5 };
   downloadURL!: Observable<string>;
@@ -131,8 +131,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   onEditProduct(data: any) {
+    this.fb = [];
     this.userForm.reset();
     this.submitted = false;
+    this.image1 = data.imagesPath;
     this.editData = data;
     document.getElementById('editModel')?.classList.add('block');
   }
@@ -159,6 +161,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
               this.downloadURL.subscribe((url) => {
                 if (url) {
                   this.image.push(url);
+                  this.db.collection('products').add({
+                    title: '--',
+                    amount: 0,
+                    category: '--',
+                    color: '--',
+                    description: '--',
+                    imagesPath: [url],
+                  });
                   if (i == event.length - 1) {
                     resolve('');
                   }
@@ -237,25 +247,69 @@ export class ProductsComponent implements OnInit, OnDestroy {
       })
       .catch((err) => {
         this.toastr.error('Something went wrong');
+      })
+      .finally(() => {
+        this.ReloadDatatable();
       });
   }
 
-  onEditSubmit() {
-    document.getElementById('editModel')?.classList.add('block');
-    Object.keys(this.userForm.value).forEach((e) => {
-      this.userForm.value[e]
-        ? this.userForm.value[e]
-        : delete this.userForm.value[e];
-    });
+  onEditFileSelected(event: any[]) {
+    this.isLoading = true;
 
-    this.db
-      .collection('products')
-      .doc(this.editData.id)
-      .ref.update(this.userForm.value)
-      .then((res) => {
-        this.toastr.success('Updated');
-        document.getElementById('editModel')?.classList.remove('block');
-        this.ReloadDatatable();
+    return new Promise((resolve, reject) => {
+      this.image = [];
+      for (let i = 0; i < event.length; i++) {
+        var n = Math.floor(
+          Math.pow(10, 10 - 1) +
+            Math.random() * (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
+        );
+        const file = event[i];
+        const filePath = `AdminImages/${n}`;
+        const fileRef = this.storage.ref(filePath);
+        const task = this.storage.upload(`AdminImages/${n}`, file);
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              this.downloadURL = fileRef.getDownloadURL();
+              this.downloadURL.subscribe((url) => {
+                if (url) {
+                  this.image.push(url);
+                  if (i == event.length - 1) {
+                    resolve(this.image);
+                  }
+                }
+              });
+            })
+          )
+          .subscribe((url) => {});
+      }
+    });
+  }
+
+  onEditSubmit() {
+    this.onEditFileSelected(this.files)
+      .then((data: any) => {
+        this.userForm.value.imagesPath = [...this.image1, ...data];
+        this.isLoading = false;
+        Object.keys(this.userForm.value).forEach((e) => {
+          this.userForm.value[e]
+            ? this.userForm.value[e]
+            : delete this.userForm.value[e];
+        });
+
+        this.db
+          .collection('products')
+          .doc(this.editData.id)
+          .ref.update(this.userForm.value)
+          .then((res) => {
+            this.toastr.success('Updated');
+            document.getElementById('editModel')?.classList.remove('block');
+            this.ReloadDatatable();
+          })
+          .catch((err) => {
+            this.toastr.error(err.message);
+          });
       })
       .catch((err) => {
         this.toastr.error(err.message);

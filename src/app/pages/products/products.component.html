@@ -7,6 +7,7 @@
     data-keyboard="false"
     data-backdrop="static"
     (click)="onAddProduct()"
+    hidden
   >
     Add Product
   </button>
@@ -169,7 +170,7 @@
   </div>
 </div>
 
-<div id="addModel" class="modal">
+<!-- <div id="addModel" class="modal">
   <div class="modal-content">
     <div class="modal-header">
       <span class="close" id="model-close-btn" (click)="onClose()"
@@ -315,7 +316,7 @@
       </form>
     </div>
   </div>
-</div>
+</div> -->
 
 <div id="editModel" class="modal">
   <div class="modal-content">
@@ -325,9 +326,26 @@
       >
       <div class="col-12" style="float: right">
         <div class="btn-btm-inr-tabs text-center my-3">
-          <button type="submit" class="btn mr-2" (click)="onEditSubmit()">
-            Save
+          <button class="btn" *ngIf="isLoading; else submitProduct">
+            <ng-container>
+              <div
+                class="loader"
+                style="margin: auto; height: 20px; width: 20px"
+              ></div>
+            </ng-container>
           </button>
+
+          <ng-template #submitProduct>
+            <button
+              #submitProduct
+              class="btn"
+              type="submit"
+              [hidden]="isLoading"
+              (click)="onEditSubmit()"
+            >
+              Save
+            </button>
+          </ng-template>
           <button
             type="button"
             class="btn"
@@ -341,6 +359,18 @@
     </div>
     <div *ngIf="editData" class="modal-body">
       <form class="row comn-form" [formGroup]="userForm">
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <ngx-slick-carousel
+            *ngIf="image1"
+            class="carousel"
+            #slickModal="slick-carousel"
+            [config]="slideConfigImg"
+          >
+            <div ngxSlickItem *ngFor="let slide of image1; index as i">
+              <img src="{{ slide }}" alt="" width="100%" />
+            </div>
+          </ngx-slick-carousel>
+        </div>
         <div class="col-md-6 form-group">
           <strong class="lbl-class">Title :</strong>
           <input
@@ -395,6 +425,37 @@
             formControlName="description"
             style="margin-top: 5px"
           />
+        </div>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <input
+            type="file"
+            id="file"
+            #userPhoto
+            (change)="onImageSelect($event)"
+            accept="image/*"
+            multiple
+          />
+          <ngx-slick-carousel
+            *ngIf="fb"
+            class="carousel"
+            #slickModal="slick-carousel"
+            [config]="slideConfigImg"
+          >
+            <div
+              ngxSlickItem
+              *ngFor="let slide of fb; index as i"
+              [class.img-select]="selected[i]"
+              (click)="[(selected[i] = !selected[i]), onImgSelect(slide)]"
+            >
+              <span
+                class="close-img"
+                id="model-close-btn"
+                (click)="onImageClose(i)"
+                >&times;</span
+              >
+              <img src="{{ slide }}" alt="" width="100%" />
+            </div>
+          </ngx-slick-carousel>
         </div>
       </form>
     </div>
