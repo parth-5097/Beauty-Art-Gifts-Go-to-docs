@@ -324,7 +324,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
           .ref.update(this.userForm.value)
           .then((res) => {
             this.toastr.success('Updated');
-            document.getElementById('editModel')?.classList.remove('block');
             this.ReloadDatatable();
           })
           .catch((err) => {
