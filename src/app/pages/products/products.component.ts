@@ -145,6 +145,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.image1 = [];
     this.currentIndex++;
     this.editData = this.data[this.currentIndex];
+    this.userForm.reset();
     this.image1 = this.editData.imagesPath;
   }
 
@@ -152,6 +153,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.image1 = [];
     this.currentIndex--;
     this.editData = this.data[this.currentIndex];
+    this.userForm.reset();
     this.image1 = this.editData.imagesPath;
   }
 
