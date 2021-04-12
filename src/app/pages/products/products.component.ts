@@ -21,6 +21,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   currentIndex: any;
   data: any[] = [];
+  category: any[] = [];
   selectedFile: any = null;
   fb: any[] = [];
   files: any[] = [];
@@ -52,13 +53,27 @@ export class ProductsComponent implements OnInit, OnDestroy {
       scrollY: '50vh',
       responsive: true,
     };
+
     this.userForm = this.formBuilder.group({
       amount: ['', Validators.required],
       category: ['', Validators.required],
       color: ['', Validators.required],
       description: ['', Validators.required],
       title: ['', Validators.required],
+      con_no: ['', Validators.required],
+      shop_no: ['', Validators.required],
+      item_no: ['', Validators.required],
     });
+
+    this.db
+      .collection('categories')
+      .ref.get()
+      .then((res) => {
+        res.forEach((doc: any) => {
+          this.category.push(doc.data().name);
+        });
+      });
+
     this.getdbData().then((data) => {
       this.dtTrigger.next();
     });
@@ -182,6 +197,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
                   this.db.collection('products').add({
                     title: '--',
                     amount: 0,
+                    con_no: 0,
+                    shop_no: 0,
+                    item_no: 0,
                     category: '--',
                     color: '--',
                     description: '--',

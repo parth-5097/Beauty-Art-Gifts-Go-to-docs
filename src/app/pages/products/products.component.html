@@ -35,6 +35,9 @@
           <th>Category</th>
           <th>Color</th>
           <th>Description</th>
+          <th>Con No</th>
+          <th>Shop No</th>
+          <th>Item No</th>
           <th>Image</th>
           <th>Action</th>
         </tr>
@@ -46,6 +49,9 @@
           <td>{{ person.category }}</td>
           <td>{{ person.color }}</td>
           <td>{{ person.description }}</td>
+          <td>{{ person.con_no }}</td>
+          <td>{{ person.shop_no }}</td>
+          <td>{{ person.item_no }}</td>
           <td>
             <button class="btn" (click)="onImage(person.imagesPath)">
               View Image
@@ -408,6 +414,39 @@
           />
         </div>
         <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Con No :</strong><br />
+          <input
+            type="number"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.con_no"
+            formControlName="con_no"
+            style="margin-top: 5px"
+          />
+        </div>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Shop No :</strong><br />
+          <input
+            type="number"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.shop_no"
+            formControlName="shop_no"
+            style="margin-top: 5px"
+          />
+        </div>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
+          <strong class="lbl-class">Item No :</strong><br />
+          <input
+            type="number"
+            name=""
+            class="form-control input-style"
+            [placeholder]="editData.item_no"
+            formControlName="item_no"
+            style="margin-top: 5px"
+          />
+        </div>
+        <div class="col-md-6 form-group" style="margin-top: 10px">
           <strong class="lbl-class">Category :</strong><br />
           <select
             name=""
@@ -415,17 +454,12 @@
             formControlName="category"
             style="margin-top: 5px"
           >
-            <option disabled [selected]="editData.category">{{ editData.category }}</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
+            <option disabled [selected]="editData.category">
+              {{ editData.category }}
+            </option>
+            <option *ngFor="let cat of category" value="{{ cat }}">
+              {{ cat }}
+            </option>
           </select>
         </div>
         <div class="col-md-6 form-group" style="margin-top: 10px">
