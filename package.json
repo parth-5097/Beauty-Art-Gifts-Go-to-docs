@@ -8,11 +8,11 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "git": "bash git.sh"
+    "git": "git.sh"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~11.2.1",
+    "@angular/animations": "^11.2.12",
     "@angular/common": "~11.2.1",
     "@angular/compiler": "~11.2.1",
     "@angular/core": "~11.2.1",

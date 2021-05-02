@@ -172,7 +172,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.image1 = this.editData.imagesPath;
   }
 
-  onFileSelected(event: any[]) {
+  onFileSelected(event: any[], cat: any) {
     this.isLoading = true;
 
     return new Promise((resolve, reject) => {
@@ -200,7 +200,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
                     con_no: 0,
                     shop_no: 0,
                     item_no: 0,
-                    category: '--',
+                    category: cat,
                     color: '--',
                     description: '--',
                     imagesPath: [url],
@@ -274,19 +274,27 @@ export class ProductsComponent implements OnInit, OnDestroy {
       });
   }
 
-  onImageUpload() {
-    this.onFileSelected(this.files)
-      .then((data) => {
-        this.isLoading = false;
-        document.getElementById('addImage')?.classList.remove('block');
-        this.fb = [];
-      })
-      .catch((err) => {
-        this.toastr.error('Something went wrong');
-      })
-      .finally(() => {
-        this.ReloadDatatable();
-      });
+  onImageUpload(category: any) {
+    if (category) {
+      alert(`Your selected image will go into ${category} category`);
+      this.onFileSelected(this.files, category)
+        .then((data) => {
+          this.isLoading = false;
+          document.getElementById('addImage')?.classList.remove('block');
+          this.fb = [];
+        })
+        .catch((err) => {
+          this.toastr.error('Something went wrong');
+        })
+        .finally(() => {
+          this.toastr.success('Image uploaded successfully');
+          setTimeout(() => {
+            this.ReloadDatatable();
+          }, 0);
+        });
+    } else {
+      this.toastr.error('Please select category');
+    }
   }
 
   onEditFileSelected(event: any[]) {
