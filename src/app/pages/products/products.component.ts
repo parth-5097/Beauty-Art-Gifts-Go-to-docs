@@ -50,6 +50,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
       pagingType: 'simple_numbers',
       pageLength: 20,
       destroy: true,
+      scrollX: true,
       scrollY: '50vh',
       responsive: true,
     };
