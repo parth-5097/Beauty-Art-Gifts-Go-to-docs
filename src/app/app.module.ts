@@ -19,9 +19,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { DataTablesModule } from 'angular-datatables';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { OrderPdfComponent } from './pages/order-pdf/order-pdf.component';
 
 @NgModule({
-  declarations: [AppComponent, ProductsComponent, LoginComponent],
+  declarations: [AppComponent, ProductsComponent, LoginComponent, OrderPdfComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
