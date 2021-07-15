@@ -1,0 +1,75 @@
+<div class="right-content">
+  <h3>
+    <a [routerLink]="['/product']" [routerLinkActive]="'active'">Products</a>
+    &nbsp; | &nbsp;
+    <a [routerLink]="['/order']" [routerLinkActive]="'active'">Orders</a>
+    &nbsp; | &nbsp;
+    <a href="javascript:void(0)" class="active"
+      >List of pdf for {{ customerId }}</a
+    >
+  </h3>
+
+  <div class="section-div">
+    <ul *ngIf="files.length > 0">
+      <li *ngFor="let file of files">
+        <img src="/assets/pdf-icon.png" alt="" height="10%" width="10%" />
+        &nbsp; &nbsp;
+        <p>
+          {{ file.name }}
+        </p>
+        &nbsp; &nbsp;
+        <a
+          href="javascript:void(0)"
+          style="color: black"
+          (click)="downloadPdf(file.url, file.name)"
+          ><i class="fa fa-download fa-lg" aria-hidden="true"></i
+        ></a>
+        &nbsp; &nbsp;
+        <a
+          href="javascript:void(0)"
+          style="color: black"
+          (click)="onDeletePdf(file.name)"
+          ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
+        ></a>
+      </li>
+    </ul>
+    <ul *ngIf="files.length == 0">
+      <li>Please Upload PDF</li>
+    </ul>
+  </div>
+</div>
+
+<!-- <div id="imageModel" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" id="model-close-btn" (click)="onClose()"
+          >&times;</span
+        >
+      </div>
+      <ngx-slick-carousel
+        class="carousel"
+        #slickModal="slick-carousel"
+        [config]="slideConfig"
+      >
+        <div ngxSlickItem *ngFor="let slide of files; index as i" class="slide">
+          <div style="float: right">
+            <a
+              href="javascript:void(0)"
+              style="color: black"
+              (click)="onDeletePdf(slide.id, slide.name)"
+              ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
+            ></a>
+          </div>
+          <div
+            style="padding: 10px; height: auto; width: auto"
+            (click)="downloadPdf(slide.url, slide.name)"
+          >
+            <img src="/assets/pdf-icon.png" alt="" height="100%" width="100%" />
+            <p style="overflow: hidden">
+              {{ slide.name }}
+            </p>
+          </div>
+        </div>
+      </ngx-slick-carousel>
+    </div>
+  </div> -->

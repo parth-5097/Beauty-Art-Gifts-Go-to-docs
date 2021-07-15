@@ -20,9 +20,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { DataTablesModule } from 'angular-datatables';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { OrderPdfComponent } from './pages/order-pdf/order-pdf.component';
+import { ViewOrderPdfComponent } from './pages/view-order-pdf/view-order-pdf.component';
 
 @NgModule({
-  declarations: [AppComponent, ProductsComponent, LoginComponent, OrderPdfComponent],
+  declarations: [AppComponent, ProductsComponent, LoginComponent, OrderPdfComponent, ViewOrderPdfComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

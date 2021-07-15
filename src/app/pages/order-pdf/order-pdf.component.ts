@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 import { SlickCarouselComponent } from 'ngx-slick-carousel';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-
-declare var require: any;
-const FileSaver = require('file-saver');
 
 @Component({
   selector: 'app-order-pdf',
@@ -27,7 +25,7 @@ export class OrderPdfComponent implements OnInit {
   constructor(
     private db: AngularFirestore,
     private storage: AngularFireStorage,
-    private toastr: ToastrService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -56,22 +54,9 @@ export class OrderPdfComponent implements OnInit {
               .listAll()
               .subscribe((res) => {
                 res.items.length > 0
-                  ? res.items.forEach((file) => {
-                      this.storage
-                        .ref(file.fullPath)
-                        .getDownloadURL()
-                        .subscribe((res) => {
-                          user.orderFiles = user.orderFiles
-                            ? [
-                                ...user.orderFiles,
-                                { id: user.id, name: file.name, url: res },
-                              ]
-                            : [{ id: user.id, name: file.name, url: res }];
-                          this.data.find((el) => el.id == user.id)
-                            ? ``
-                            : this.data.push(user);
-                        });
-                    })
+                  ? this.data.find((el) => el.id == user.id)
+                    ? ``
+                    : this.data.push({ ...user, totalPdf: res.items.length })
                   : ``;
               });
           });
@@ -94,33 +79,10 @@ export class OrderPdfComponent implements OnInit {
   }
 
   onViewPdf(id: any) {
-    this.files = this.data.find((el) => el.id == id).orderFiles;
-    document.getElementById('imageModel')?.classList.add('block');
+    this.router.navigate([`order/${id}`]);
   }
 
   onClose() {
     document.getElementById('imageModel')?.classList.remove('block');
-  }
-
-  onDeletePdf(id: any, name: any) {
-    if (id && name) {
-      this.storage
-        .ref('ordersPdf/' + id + '/' + name)
-        .delete()
-        .subscribe((res) => {
-          this.toastr.success(`Deleted SuccessFully`);
-          this.files = this.files.filter((el) => {
-            if ((el.id == id && el.name != name) || el.id != id) {
-              return el;
-            }
-          });
-        });
-    } else {
-      this.toastr.error(`Missing parameters for file`);
-    }
-  }
-
-  downloadPdf(pdfUrl: string, pdfName: string) {
-    FileSaver.saveAs(pdfUrl, pdfName);
   }
 }

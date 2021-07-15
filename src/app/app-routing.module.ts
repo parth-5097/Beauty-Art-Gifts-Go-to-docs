@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { OrderPdfComponent } from './pages/order-pdf/order-pdf.component';
 import { ProductsComponent } from './pages/products/products.component';
+import { ViewOrderPdfComponent } from './pages/view-order-pdf/view-order-pdf.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'order',
     component: OrderPdfComponent,
+  },
+  {
+    path: 'order/:id',
+    component: ViewOrderPdfComponent,
   },
 ];
 
