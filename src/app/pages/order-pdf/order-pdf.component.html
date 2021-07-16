@@ -15,7 +15,6 @@
     >
       <thead>
         <tr>
-          <th>Customer Id</th>
           <th>Email/PhoneNumber</th>
           <th>First name</th>
           <th>Last Name</th>
@@ -27,9 +26,9 @@
           <th>View PDF</th>
         </tr>
       </thead>
-      <tbody *ngIf="data?.length != 0">
+      <tbody>
+        <div class="loader" style="margin-left: 50%"></div>
         <tr *ngFor="let person of data; index as i">
-          <td>{{ person.id }}</td>
           <td>{{ person.emailOrMobile }}</td>
           <td>{{ person.firstName }}</td>
           <td>{{ person.lastName }}</td>
@@ -41,11 +40,6 @@
           <td>
             <button class="btn" (click)="onViewPdf(person.id)">Show PDF</button>
           </td>
-        </tr>
-      </tbody>
-      <tbody *ngIf="data?.length == 0">
-        <tr>
-          <td colspan="8" class="no-data-available">No data!</td>
         </tr>
       </tbody>
     </table>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -13,17 +14,25 @@ const FileSaver = require('file-saver');
 })
 export class ViewOrderPdfComponent implements OnInit {
   files: any[] = [];
-  customerId: any;
+  customer: any = {};
 
   constructor(
     private route: ActivatedRoute,
     private storage: AngularFireStorage,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private db: AngularFirestore
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((res) => {
-      this.customerId = res.id;
+      this.customer.id = res.id;
+      this.db
+        .collection('customers')
+        .doc(this.customer.id)
+        .ref.get()
+        .then((user) => {
+          this.customer = { ...this.customer, data: user.data() };
+        });
       this.storage
         .ref('ordersPdf/' + res.id)
         .listAll()
@@ -45,7 +54,7 @@ export class ViewOrderPdfComponent implements OnInit {
   onDeletePdf(name: any) {
     if (name) {
       this.storage
-        .ref('ordersPdf/' + this.customerId + '/' + name)
+        .ref('ordersPdf/' + this.customer.id + '/' + name)
         .delete()
         .subscribe((res) => {
           this.toastr.success(`Deleted SuccessFully`);

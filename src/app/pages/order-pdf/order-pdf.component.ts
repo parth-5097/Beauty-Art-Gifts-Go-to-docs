@@ -37,7 +37,11 @@ export class OrderPdfComponent implements OnInit {
       responsive: true,
     };
 
-    this.getdbData();
+    this.getdbData().then((data) => {
+      setTimeout(() => {
+        this.dtTrigger.next();
+      }, 1000);
+    });
   }
 
   getdbData() {
@@ -60,11 +64,11 @@ export class OrderPdfComponent implements OnInit {
                   : ``;
               });
           });
+          resolve(``);
         })
         .catch((err) => {
           return reject(err);
-        })
-        .finally(() => resolve(``));
+        });
     });
   }
 

@@ -5,7 +5,8 @@
     <a [routerLink]="['/order']" [routerLinkActive]="'active'">Orders</a>
     &nbsp; | &nbsp;
     <a href="javascript:void(0)" class="active"
-      >List of pdf for {{ customerId }}</a
+      >List of pdf for
+      {{ customer.data?.firstName + " " + customer.data?.lastName }}</a
     >
   </h3>
 
