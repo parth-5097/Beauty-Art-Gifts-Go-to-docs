@@ -12,26 +12,46 @@
 
   <div class="section-div">
     <ul *ngIf="files.length > 0">
-      <li *ngFor="let file of files">
-        <img src="/assets/pdf-icon.png" alt="" height="10%" width="10%" />
-        &nbsp; &nbsp;
-        <p>
-          {{ file.name }}
-        </p>
-        &nbsp; &nbsp;
-        <a
-          href="javascript:void(0)"
-          style="color: black"
-          (click)="downloadPdf(file.url, file.name)"
-          ><i class="fa fa-download fa-lg" aria-hidden="true"></i
-        ></a>
-        &nbsp; &nbsp;
-        <a
-          href="javascript:void(0)"
-          style="color: black"
-          (click)="onDeletePdf(file.name)"
-          ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
-        ></a>
+      <li
+        *ngFor="let file of files"
+        style="justify-content: space-between; width: 100%"
+      >
+        <div
+          style="
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+          "
+        >
+          <img src="/assets/pdf-icon.png" alt="" height="10%" width="10%" />
+          &nbsp; &nbsp;
+          <p>
+            {{ file.name }}
+          </p>
+        </div>
+        <div
+          style="
+            justify-content: flex-end;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 20%;
+          "
+        >
+          <a
+            href="javascript:void(0)"
+            style="color: black; padding: 3px"
+            (click)="downloadPdf(file.url, file.name)"
+            ><i class="fa fa-download fa-lg" aria-hidden="true"></i
+          ></a>
+          <a
+            href="javascript:void(0)"
+            style="color: black; padding: 3px"
+            (click)="onDeletePdf(file.name)"
+            ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
+          ></a>
+        </div>
       </li>
     </ul>
     <ul *ngIf="files.length == 0">

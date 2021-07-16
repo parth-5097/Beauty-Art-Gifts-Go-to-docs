@@ -75,9 +75,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         });
       });
 
-    this.getdbData().then((data) => {
-      this.dtTrigger.next();
-    });
+    this.getdbData();
   }
 
   getdbData() {
@@ -87,12 +85,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
         .collection('products')
         .ref.get()
         .then((res) => {
+          let count = 1;
           res.forEach((doc: any) => {
             this.data.push({ id: doc.id, ...doc.data() });
+            count == res.size ? this.dtTrigger.next() : ``;
+            count++;
           });
-        })
-        .finally(() => {
-          resolve('');
         });
     });
   }
@@ -102,17 +100,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   ReloadDatatable() {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      this.getdbData().then((data) => {
-        this.dtTrigger.next();
-      });
-    });
+    this.getdbData();
   }
 
   rerender(): void {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      this.dtTrigger.next();
-    });
+    this.dtTrigger.next();
   }
 
   onImage(image: any) {

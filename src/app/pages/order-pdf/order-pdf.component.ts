@@ -37,11 +37,7 @@ export class OrderPdfComponent implements OnInit {
       responsive: true,
     };
 
-    this.getdbData().then((data) => {
-      setTimeout(() => {
-        this.dtTrigger.next();
-      }, 1000);
-    });
+    this.getdbData();
   }
 
   getdbData() {
@@ -51,20 +47,22 @@ export class OrderPdfComponent implements OnInit {
         .collection('customers')
         .ref.get()
         .then((res) => {
+          let count = 1;
           res.forEach((doc: any) => {
             let user = { id: doc.id, ...doc.data() };
             this.storage
               .ref('ordersPdf/' + doc.id)
               .listAll()
-              .subscribe((res) => {
-                res.items.length > 0
+              .subscribe((pdf) => {
+                pdf.items.length > 0
                   ? this.data.find((el) => el.id == user.id)
                     ? ``
-                    : this.data.push({ ...user, totalPdf: res.items.length })
+                    : this.data.push({ ...user, totalPdf: pdf.items.length })
                   : ``;
+                count == res.size ? this.dtTrigger.next() : ``;
+                count++;
               });
           });
-          resolve(``);
         })
         .catch((err) => {
           return reject(err);
@@ -73,9 +71,7 @@ export class OrderPdfComponent implements OnInit {
   }
 
   ReloadDatatable() {
-    this.getdbData().then((data) => {
-      this.dtTrigger.next();
-    });
+    this.getdbData();
   }
 
   rerender(): void {

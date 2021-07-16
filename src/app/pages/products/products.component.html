@@ -48,6 +48,7 @@
         </tr>
       </thead>
       <tbody *ngIf="data?.length != 0">
+        <div class="loader" style="margin-left: 50%"></div>
         <tr *ngFor="let person of data; index as i">
           <td>{{ person.title }}</td>
           <td>{{ person.amount }}</td>
@@ -74,11 +75,6 @@
               <img src="assets/delete-icon.svg" />
             </a>
           </td>
-        </tr>
-      </tbody>
-      <tbody *ngIf="data?.length == 0">
-        <tr>
-          <td colspan="8" class="no-data-available">No data!</td>
         </tr>
       </tbody>
     </table>
