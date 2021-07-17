@@ -33,6 +33,7 @@ export class OrderPdfComponent implements OnInit {
       pagingType: 'simple_numbers',
       pageLength: 20,
       destroy: true,
+      scrollX: true,
       scrollY: '50vh',
       responsive: true,
     };
